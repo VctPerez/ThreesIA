@@ -5,7 +5,7 @@ from numpy.random import random, random_integers
 
 WHITE = (255, 255, 255)
 LIGHT_SALMON = (255, 160, 122)
-VALUES = [1,2,3,6]
+VALUES = [1,1,1,1,2,2,2,3,3,6]
 pygame.font.init()
 font = pygame.font.SysFont(None, 40)  # Tamaño de fuente de 40
 
@@ -33,11 +33,24 @@ class Board:
 
 
     def insert_random_number(self):
-        print(self.cells)
         row = random_integers(0,3)
         col = random_integers(0,3)
-        random_index = random_integers(0,3)
         if self.cells[row, col] == 0:
+            random_index = random_integers(0, 9)
             self.cells[row, col] = VALUES[random_index]
         elif numpy.isin(0, self.cells): # Para evitar recursion infinita en el caso de que no queden huecos libres
             self.insert_random_number()
+
+    def move_up(self):
+        for index, value in numpy.ndenumerate(self.cells):
+            if index[1] != 0 and self.check_sum_up(index):
+                self.cells[index[0], index[1] - 1] += value
+                self.cells[index[0], index[1]] = 0
+
+    def check_sum_up(self, index):
+        ''' Comprueba si se cumplen las condiciones para hacer la suma'''
+        return (self.cells[index[0], index[1] - 1] == 1 and self.cells[index[0], index[1]] == 2 or
+                self.cells[index[0], index[1] - 1] == 2 and self.cells[index[0], index[1]] == 1 or
+                (self.cells[index[0], index[1] - 1] == self.cells[index[0], index[1]] and
+                 self.cells[index[0], index[1]] != 2 ) or
+                self.cells[index[0], index[1] - 1] == 0)

@@ -2,9 +2,6 @@ import pygame
 
 from src.Board import Board
 
-def key_is_arrow_or_wasd(key):
-    return (key == pygame.K_UP or key == pygame.K_DOWN or  key == pygame.K_RIGHT or key == pygame.K_LEFT
-            or key == pygame.K_w or key == pygame.K_a or key == pygame.K_s or key == pygame.K_d)
 
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
@@ -17,6 +14,15 @@ board_y = (SCREEN_HEIGHT - 4 * CELL_SIZE) // 2
 board = Board(100, 4,4, board_x, board_y)
 
 
+def key_is_arrow_or_wasd(key):
+    return (key == pygame.K_UP or key == pygame.K_DOWN or  key == pygame.K_RIGHT or key == pygame.K_LEFT
+            or key == pygame.K_w or key == pygame.K_a or key == pygame.K_s or key == pygame.K_d)
+
+def make_movement(key):
+    match key:
+        case pygame.K_UP | pygame.K_w:
+            board.move_up()
+
 if __name__ == '__main__':
     running = True
     while running:
@@ -25,9 +31,12 @@ if __name__ == '__main__':
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.KEYDOWN and key_is_arrow_or_wasd(event.key):
+                make_movement(event.key)
                 board.insert_random_number()
+                print(board.cells)
 
         # fill the screen with a color to wipe away anything from last frame
+
         screen.fill("gray")
 
     # RENDER YOUR GAME HERE
