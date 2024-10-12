@@ -26,8 +26,8 @@ class Board:
 
     def paint(self, screen):
         for index, value in numpy.ndenumerate(self.boardState.cells):
-            cell_x = self.pos[0] + index[0] * (self.cell_size + 5)
-            cell_y = self.pos[1] + index[1] * (self.cell_size + 5)
+            cell_x = self.pos[0] + index[1] * (self.cell_size + 5)
+            cell_y = self.pos[1] + index[0] * (self.cell_size + 5)
             if value == 0:
                 pygame.draw.rect(screen, colors.WHITE, (cell_x, cell_y, self.cell_size, self.cell_size), border_radius=5)
             else:

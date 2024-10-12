@@ -31,29 +31,29 @@ class BoardState:
 
     def move_up(self):
         for index, value in numpy.ndenumerate(self.cells):
-            if index[1] > 0 and check_sum(self.cells[index[0], index[1]], self.cells[index[0], index[1] - 1]):
-                self.cells[index[0], index[1] - 1] += value
+            if index[0] > 0 and check_sum(self.cells[index[0], index[1]], self.cells[index[0] - 1, index[1]]):
+                self.cells[index[0] - 1, index[1]] += value
                 self.cells[index[0], index[1]] = 0
 
     def move_down(self):
         cells_reversed = list(numpy.ndenumerate(self.cells))
         cells_reversed.reverse()
         for index, value in cells_reversed:
-            if index[1] < self.n_rows-1 and check_sum(self.cells[index[0], index[1]], self.cells[index[0], index[1] + 1]):
-                self.cells[index[0], index[1] + 1] += value
+            if index[0] < self.n_rows-1 and check_sum(self.cells[index[0], index[1]], self.cells[index[0] + 1, index[1]]):
+                self.cells[index[0] + 1, index[1]] += value
                 self.cells[index[0], index[1]] = 0
 
     def move_left(self):
         for index, value in numpy.ndenumerate(self.cells):
-            if index[0] > 0 and check_sum(self.cells[index[0], index[1]], self.cells[index[0] - 1, index[1]]):
-                self.cells[index[0] - 1, index[1]] += value
+            if index[1] > 0 and check_sum(self.cells[index[0], index[1]], self.cells[index[0], index[1] - 1]):
+                self.cells[index[0], index[1] - 1] += value
                 self.cells[index[0], index[1]] = 0
 
     def move_right(self):
         cells_reversed = list(numpy.ndenumerate(self.cells))
         cells_reversed.reverse()
         for index, value in cells_reversed:
-            if index[0] < self.n_cols-1 and check_sum(self.cells[index[0], index[1]], self.cells[index[0] + 1, index[1]]):
-                self.cells[index[0] + 1, index[1]] += value
+            if index[1] < self.n_cols-1 and check_sum(self.cells[index[0], index[1]], self.cells[index[0], index[1] + 1]):
+                self.cells[index[0], index[1] + 1] += value
                 self.cells[index[0], index[1]] = 0
 
