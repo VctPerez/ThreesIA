@@ -3,7 +3,7 @@ import pygame
 import random
 from numpy.random import random, random_integers
 
-from src.BoardState import BoardState
+from src.boardState import BoardState
 
 WHITE = (255, 255, 255)
 LIGHT_SALMON = (255, 160, 122)

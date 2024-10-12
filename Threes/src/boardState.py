@@ -4,6 +4,15 @@ from numpy.random import random, random_integers
 
 VALUES = [1,1,1,1,2,2,2,3,3,6]
 
+
+def check_sum(cell, new_cell):
+    ''' Comprueba si se cumplen las condiciones para hacer la suma'''
+    return (cell + new_cell == 3 or
+            (cell == new_cell and
+             cell != 2) or
+            new_cell == 0)
+
+
 class BoardState:
 
     def __init__(self, n_rows, n_cols):
@@ -23,32 +32,29 @@ class BoardState:
 
     def move_up(self):
         for index, value in numpy.ndenumerate(self.cells):
-            if index[1] > 0 and self.check_sum(self.cells[index[0], index[1]], self.cells[index[0], index[1] - 1]):
+            if index[1] > 0 and check_sum(self.cells[index[0], index[1]], self.cells[index[0], index[1] - 1]):
                 self.cells[index[0], index[1] - 1] += value
                 self.cells[index[0], index[1]] = 0
 
     def move_down(self):
-        for index, value in numpy.ndenumerate(self.cells):
-            if index[1] < self.n_rows-1 and self.check_sum(self.cells[index[0], index[1]], self.cells[index[0], index[1] + 1]):
+        cells_reversed = list(numpy.ndenumerate(self.cells))
+        cells_reversed.reverse()
+        for index, value in cells_reversed:
+            if index[1] < self.n_rows-1 and check_sum(self.cells[index[0], index[1]], self.cells[index[0], index[1] + 1]):
                 self.cells[index[0], index[1] + 1] += value
                 self.cells[index[0], index[1]] = 0
 
     def move_left(self):
         for index, value in numpy.ndenumerate(self.cells):
-            if index[0] > 0 and self.check_sum(self.cells[index[0], index[1]], self.cells[index[0] - 1, index[1]]):
+            if index[0] > 0 and check_sum(self.cells[index[0], index[1]], self.cells[index[0] - 1, index[1]]):
                 self.cells[index[0] - 1, index[1]] += value
                 self.cells[index[0], index[1]] = 0
 
     def move_right(self):
-        for index, value in numpy.ndenumerate(self.cells):
-            if index[0] < self.n_cols-1 and self.check_sum(self.cells[index[0], index[1]], self.cells[index[0] + 1, index[1]]):
+        cells_reversed = list(numpy.ndenumerate(self.cells))
+        cells_reversed.reverse()
+        for index, value in cells_reversed:
+            if index[0] < self.n_cols-1 and check_sum(self.cells[index[0], index[1]], self.cells[index[0] + 1, index[1]]):
                 self.cells[index[0] + 1, index[1]] += value
                 self.cells[index[0], index[1]] = 0
 
-    def check_sum(self, cell, new_cell):
-        ''' Comprueba si se cumplen las condiciones para hacer la suma'''
-        return (cell == 1 and new_cell == 2 or
-                cell == 2 and new_cell == 1 or
-                (cell == new_cell and
-                 cell != 2) or
-                new_cell == 0)

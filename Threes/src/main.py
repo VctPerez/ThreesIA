@@ -1,8 +1,8 @@
 import pygame
 
-from src.BoardController import BoardController
-from src.BoardState import BoardState
-from src.BoardView import Board
+from src.boardController import BoardController
+from src.boardState import BoardState
+from src.boardView import Board
 
 
 SCREEN_WIDTH = 1280

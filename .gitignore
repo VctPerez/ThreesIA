@@ -1,5 +1,5 @@
-build/
+*.xml
+*.iml
 
-*.xml*
-*.iml*
-*.pyc*
+*.pyc
+/.idea
