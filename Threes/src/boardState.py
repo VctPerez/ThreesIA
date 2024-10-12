@@ -1,8 +1,7 @@
 import numpy
 import random
-from numpy.random import random, random_integers
 
-VALUES = [1,1,1,1,2,2,2,3,3,6]
+VALUES = [1,1,1,1,1,2,2,3]
 
 
 def check_sum(cell, new_cell):
@@ -21,10 +20,10 @@ class BoardState:
         self.cells = numpy.zeros((n_rows, n_cols))
 
     def insert_random_number(self):
-        row = random_integers(0, 3)
-        col = random_integers(0, 3)
+        row = random.randint(0, 3)
+        col = random.randint(0, 3)
         if self.cells[row, col] == 0:
-            random_index = random_integers(0, 9)
+            random_index = random.randint(0, 7)
             self.cells[row, col] = VALUES[random_index]
         elif numpy.isin(0, self.cells):  # Para evitar recursion infinita en el caso de que no queden huecos libres
             self.insert_random_number()
