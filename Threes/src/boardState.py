@@ -124,3 +124,12 @@ class BoardState:
         for row in range(self.n_rows):
             new_row = merge_and_replace(self.cells[row,:],direction="right")
             self.cells[row,:] = new_row
+
+    def g(self):
+        return 1
+
+    def h(self):
+        return 1
+
+    def f(self, state):
+        return self.g() + self.h()
