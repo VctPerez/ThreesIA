@@ -1,4 +1,5 @@
 import pygame
+import numpy as np
 
 from src.boardController import BoardController
 from src.boardState import BoardState
@@ -14,7 +15,10 @@ clock = pygame.time.Clock
 board_x = (SCREEN_WIDTH - 4 * CELL_SIZE) // 2
 board_y = (SCREEN_HEIGHT - 4 * CELL_SIZE) // 2
 
-boardState = BoardState(4, 4)
+SEED = 1
+randomGenerator = np.random.default_rng(seed=SEED)
+
+boardState = BoardState(None,4, 4, randomGenerator)
 boardView = Board(100, board_x, board_y, boardState)
 boardController = BoardController(boardState)
 

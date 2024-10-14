@@ -1,7 +1,8 @@
-import numpy
-import random
+import numpy as np
 
-VALUES = [1,1,1,1,1,2,2,3]
+# from src.main import SEED
+
+VALUES = [1,1,1,1,2,2,2,3]
 
 def check_sum(cell, new_cell):
     # Checks whether two cells can be merged
@@ -11,7 +12,7 @@ def check_sum(cell, new_cell):
             new_cell == 0)
 
 def merge_and_replace(arr, direction):
-    res = numpy.zeros(4)
+    res = np.zeros(4)
     values = [i for i in arr if i != 0]
     values_size = len(values)
 
@@ -40,18 +41,67 @@ def merge_and_replace(arr, direction):
 
 class BoardState:
 
-    def __init__(self, n_rows, n_cols):
-        self.n_rows = n_rows
-        self.n_cols = n_cols
-        self.cells = numpy.zeros((n_rows, n_cols))
+    def __init__(self, father=None, n_rows=None, n_cols=None, random_generator=None):
+        self.father = father
+
+        if random_generator is None:
+            self.random_generator = np.random.default_rng(father.random_generator.bit_generator)
+        else:
+            self.random_generator = random_generator
+
+        if father is None:
+            self.n_rows = n_rows
+            self.n_cols = n_cols
+            self.cells = np.zeros((n_rows, n_cols))
+        else:
+            self.n_rows = father.n_rows
+            self.n_cols = father.n_cols
+            self.cells = np.matrix.copy(father.cells)
+
+    def getSucessors(self):
+        successors = np.array()
+
+        # MOVE UP
+        successor = BoardState(self)
+        successor.move_up()
+        successors.append(successor)
+
+        # MOVE DOWN
+        successor = BoardState(self)
+        successor.move_down()
+        successors.append(successor)
+
+        # MOVE RIGHT
+        successor = BoardState(self)
+        successor.move_right()
+        successors.append(successor)
+
+        # MOVE LEFT
+        successor = BoardState(self)
+        successor.move_left()
+        successors.append(successor)
+
+    def g(self):
+        if self.father == None:
+            return 0
+        else:
+            return 1 + self.father.g
+
+    def h(self):
+        return 0
+
+    def f(self):
+        return self.g() + self.h()
 
     def insert_random_number(self):
-        row = random.randint(0, 3)
-        col = random.randint(0, 3)
+        row = self.random_generator.integers(0, 3)
+        col = self.random_generator.integers(0, 3)
+        print("ROW: ", row)
+        print("COL: ", col)
         if self.cells[row, col] == 0:
-            random_index = random.randint(0, 7)
+            random_index = self.random_generator.integers(0, 7)
             self.cells[row, col] = VALUES[random_index]
-        elif numpy.isin(0, self.cells):  # Para evitar recursion infinita en el caso de que no queden huecos libres
+        elif np.isin(0, self.cells):  # Para evitar recursion infinita en el caso de que no queden huecos libres
             self.insert_random_number()
 
 
