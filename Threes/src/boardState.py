@@ -1,8 +1,16 @@
 import numpy as np
+import math
 
 # from src.main import SEED
 
-VALUES = [1,1,1,2,2,2,3]
+VALUES = [1,2,3,3,3,3,3,3,3,3,3,3]
+
+def calculate_max_score(n_cells):
+    res = 0
+    for i in range(n_cells):
+        res += 3 * math.pow(2,i)
+
+    return res
 
 def check_sum(cell, new_cell):
     # Checks whether two cells can be merged
@@ -51,10 +59,12 @@ class BoardState:
             self.random_generator = random_generator
 
         if father is None:
+            self.MAX_SCORE = calculate_max_score(n_rows * n_cols)
             self.n_rows = n_rows
             self.n_cols = n_cols
             self.cells = np.zeros((n_rows, n_cols))
         else:
+            self.MAX_SCORE = father.MAX_SCORE
             self.n_rows = father.n_rows
             self.n_cols = father.n_cols
             self.cells = np.matrix.copy(father.cells)
@@ -102,7 +112,7 @@ class BoardState:
             return 1 + self.father.g()
 
     def h(self):
-        return self.get_empty_cells()
+        return (self.MAX_SCORE - self.cells.sum())/3 - 1
 
     def f(self):
         return self.g() + self.h()
