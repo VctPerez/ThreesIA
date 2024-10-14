@@ -2,7 +2,7 @@ import numpy as np
 
 # from src.main import SEED
 
-VALUES = [1,1,1,1,2,2,2,3]
+VALUES = [1,1,1,2,2,2,3]
 
 def check_sum(cell, new_cell):
     # Checks whether two cells can be merged
@@ -40,6 +40,7 @@ def merge_and_replace(arr, direction):
     return res
 
 class BoardState:
+    isObjetive = False
 
     def __init__(self, father=None, n_rows=None, n_cols=None, random_generator=None):
         self.father = father
@@ -59,47 +60,58 @@ class BoardState:
             self.cells = np.matrix.copy(father.cells)
 
     def getSucessors(self):
-        successors = np.array()
+        successors = []
 
         # MOVE UP
         successor = BoardState(self)
         successor.move_up()
-        successors.append(successor)
+        successor.insert_random_number()
+        if successor != self:
+            successors.append(successor)
 
         # MOVE DOWN
         successor = BoardState(self)
         successor.move_down()
-        successors.append(successor)
+        successor.insert_random_number()
+        if successor != self:
+            successors.append(successor)
 
         # MOVE RIGHT
         successor = BoardState(self)
         successor.move_right()
-        successors.append(successor)
+        successor.insert_random_number()
+        if successor != self:
+            successors.append(successor)
 
         # MOVE LEFT
         successor = BoardState(self)
         successor.move_left()
-        successors.append(successor)
+        successor.insert_random_number()
+        if successor != self:
+            successors.append(successor)
+
+        if (successors == []) :
+            self.isObjetive = True
+
+        return successors
 
     def g(self):
-        if self.father == None:
+        if self.father is None:
             return 0
         else:
-            return 1 + self.father.g
+            return 1 + self.father.g()
 
     def h(self):
-        return 0
+        return self.get_empty_cells()
 
     def f(self):
         return self.g() + self.h()
 
     def insert_random_number(self):
-        row = self.random_generator.integers(0, 3)
-        col = self.random_generator.integers(0, 3)
-        print("ROW: ", row)
-        print("COL: ", col)
+        row = self.random_generator.integers(0, 4)
+        col = self.random_generator.integers(0, 4)
         if self.cells[row, col] == 0:
-            random_index = self.random_generator.integers(0, 7)
+            random_index = self.random_generator.integers(0, len(VALUES))
             self.cells[row, col] = VALUES[random_index]
         elif np.isin(0, self.cells):  # Para evitar recursion infinita en el caso de que no queden huecos libres
             self.insert_random_number()
@@ -124,12 +136,15 @@ class BoardState:
         for row in range(self.n_rows):
             new_row = merge_and_replace(self.cells[row,:],direction="right")
             self.cells[row,:] = new_row
+    def __eq__(self, other):
+        res = (self.cells == other.cells).all()
+        return res
 
-    def g(self):
-        return 1
-
-    def h(self):
-        return 1
-
-    def f(self, state):
-        return self.g() + self.h()
+    def get_empty_cells(self):
+        
+        count = 0
+        for row in range(self.n_rows):
+            for col in range(self.n_cols):
+                if self.cells[row,col] == 0.0:
+                    count = count + 1
+        return count

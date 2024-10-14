@@ -26,6 +26,7 @@ class BoardController:
             case pygame.K_RIGHT | pygame.K_d:
                 self.boardState.move_right()
             case default:
+                self.boardState.isObjetive = True
                 return
 
         self.boardState.insert_random_number()
