@@ -38,3 +38,7 @@ class Board:
                 screen.blit(text_surface, text_rect)
 
             pygame.draw.rect(screen, (0,0,0), (cell_x, cell_y, self.cell_size, self.cell_size), 2, border_radius=5)
+
+
+    def set_boardState(self, new_boardState):
+        self.boardState = new_boardState
