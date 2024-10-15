@@ -1,12 +1,12 @@
 import pygame
+
 from colors import WHITE, GRAY, BLUE, GREEN, ORANGE
+from config import SCREEN_WIDTH, SCREEN_HEIGHT
 
 # Class to handle the main menu
 class Menu:
-    def __init__(self, screen, screen_width, screen_height):
+    def __init__(self, screen):
         self.screen = screen
-        self.screen_width = screen_width
-        self.screen_height = screen_height
         self.font = pygame.font.Font(None, 40)
         self.title_font = pygame.font.Font(None, 60)  # Font for the title
 
@@ -32,11 +32,11 @@ class Menu:
             self.screen.fill(GRAY)
 
             # Draw the title at the top of the screen
-            self.draw_title("Threes Game", ORANGE, self.screen_width // 2 - 300, 50, 600, 100)
+            self.draw_title("Threes Game", ORANGE, SCREEN_WIDTH // 2 - 300, 50, 600, 100)
 
             # Draw the buttons with rounded corners
-            self.draw_rounded_button("Run A*", BLUE, self.screen_width // 2 - 150, self.screen_height // 2 - 50, 300, 100, 20)
-            self.draw_rounded_button("Manual", GREEN, self.screen_width // 2 - 150, self.screen_height // 2 + 100, 300, 100, 20)
+            self.draw_rounded_button("Run A*", BLUE, SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 - 50, 300, 100, 20)
+            self.draw_rounded_button("Manual", GREEN, SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 + 100, 300, 100, 20)
 
             pygame.display.flip()
 
@@ -47,13 +47,13 @@ class Menu:
                     mouse_pos = event.pos
 
                     # Check if the click is within the A* button
-                    if self.screen_width // 2 - 150 <= mouse_pos[0] <= self.screen_width // 2 + 150 and self.screen_height // 2 - 50 <= \
-                            mouse_pos[1] <= self.screen_height // 2 + 50:
+                    if SCREEN_WIDTH // 2 - 150 <= mouse_pos[0] <= SCREEN_WIDTH // 2 + 150 and SCREEN_HEIGHT // 2 - 50 <= \
+                            mouse_pos[1] <= SCREEN_HEIGHT // 2 + 50:
                         return 'a_star'
                     # Check if the click is within the Manual Control button
-                    elif self.screen_width // 2 - 150 <= mouse_pos[
-                        0] <= self.screen_width // 2 + 150 and self.screen_height // 2 + 100 <= mouse_pos[
-                        1] <= self.screen_height // 2 + 200:
+                    elif SCREEN_WIDTH // 2 - 150 <= mouse_pos[
+                        0] <= SCREEN_WIDTH // 2 + 150 and SCREEN_HEIGHT // 2 + 100 <= mouse_pos[
+                        1] <= SCREEN_HEIGHT // 2 + 200:
                         return 'manual'
 
         return None
