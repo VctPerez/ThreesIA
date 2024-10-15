@@ -1,9 +1,14 @@
 import numpy
 import pygame
+
 import colors
+import config
 
 pygame.font.init()
 font = pygame.font.SysFont(None, 40)  # Tamaño de fuente de 40
+
+board_x = (config.SCREEN_WIDTH - 4 * config.CELL_SIZE) // 2
+board_y = (config.SCREEN_HEIGHT - 4 * config.CELL_SIZE) // 2
 
 def choose_color(value):
     if value < 3:
@@ -19,9 +24,9 @@ def choose_color(value):
 
 class Board:
 
-    def __init__(self, cell_size, pos_x, pos_y, boardState):
+    def __init__(self, cell_size, boardState):
         self.cell_size = cell_size
-        self.pos = (pos_x, pos_y)
+        self.pos = (board_x, board_y)
         self.boardState = boardState
 
     def paint(self, screen):
