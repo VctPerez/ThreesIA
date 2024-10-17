@@ -24,25 +24,26 @@ def choose_color(value):
 
 class Board:
 
-    def __init__(self, cell_size, boardState):
+    def __init__(self, screen, cell_size, boardState):
+        self.screen = screen
         self.cell_size = cell_size
         self.pos = (board_x, board_y)
         self.boardState = boardState
 
-    def paint(self, screen):
+    def paint(self):
         for index, value in numpy.ndenumerate(self.boardState.cells):
             cell_x = self.pos[0] + index[1] * (self.cell_size + 5)
             cell_y = self.pos[1] + index[0] * (self.cell_size + 5)
             if value == 0:
-                pygame.draw.rect(screen, colors.WHITE, (cell_x, cell_y, self.cell_size, self.cell_size), border_radius=5)
+                pygame.draw.rect(self.screen, colors.WHITE, (cell_x, cell_y, self.cell_size, self.cell_size), border_radius=5)
             else:
-                pygame.draw.rect(screen, choose_color(value), (cell_x, cell_y, self.cell_size, self.cell_size), border_radius=5)
+                pygame.draw.rect(self.screen, choose_color(value), (cell_x, cell_y, self.cell_size, self.cell_size), border_radius=5)
                 text_surface = font.render(str(int(value)), True, (0, 0, 0))  # Crear la superficie de texto
                 text_rect = text_surface.get_rect(
                     center=(cell_x + self.cell_size // 2, cell_y + self.cell_size // 2))
-                screen.blit(text_surface, text_rect)
+                self.screen.blit(text_surface, text_rect)
 
-            pygame.draw.rect(screen, (0,0,0), (cell_x, cell_y, self.cell_size, self.cell_size), 2, border_radius=5)
+            pygame.draw.rect(self.screen, (0,0,0), (cell_x, cell_y, self.cell_size, self.cell_size), 2, border_radius=5)
 
 
     def set_boardState(self, new_boardState):

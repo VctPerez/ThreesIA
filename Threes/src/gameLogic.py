@@ -5,6 +5,7 @@ from src.boardController import BoardController
 from src.boardState import BoardState
 from src.boardView import Board
 from a_star import AStarClass
+from infoView import InfoView
 import config
 
 SEED = 1
@@ -21,14 +22,18 @@ class GameLogic:
         if game_mode == 'a_star':
             # Initialize the A* algorithm
             self.a_star_object = AStarClass(self.boardState)
-            self.path = self.a_star_object.algorithm()
-            self.boardView = Board(100, self.path[0])
+
+            a_star_info = self.a_star_object.algorithm()
+
+            self.path = a_star_info[0]
+            self.boardView = Board(self.screen,100, self.path[0])
+            self.infoView = InfoView(self.screen, a_star_info[1], a_star_info[2])
 
             # Initialize the time passed and the index of the path
             self.time_passed = 0
             self.index = 0
         else:
-            self.boardView = Board(100, self.boardState)
+            self.boardView = Board(self.screen,100, self.boardState)
 
     def update_board(self, delta_time):
         self.time_passed += delta_time
@@ -43,8 +48,13 @@ class GameLogic:
     def paint(self):
         # Fill the screen with a background color
         self.screen.fill("gray")
-        # Render the board state
-        self.boardView.paint(self.screen)
+
+        # Render the board state and the results stats
+        if self.game_mode == 'a_star':
+            self.infoView.paint()
+
+        self.boardView.paint()
+
         pygame.display.flip()
 
     def run(self):

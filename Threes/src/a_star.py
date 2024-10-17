@@ -1,10 +1,10 @@
 from numpy.ma.core import empty
 import pygame
 import numpy as np
+import time
 
 from src.boardController import BoardController
 from src.boardState import BoardState
-from src.boardView import Board
 
 SEED = 1
 randomGenerator = np.random.default_rng(seed=SEED)
@@ -24,6 +24,7 @@ class AStarClass:
         self.opened_nodes = [initial_board]
 
     def algorithm(self):
+        start_time = time.time()
         """A star algorithm. It searches the path with less cost."""
         while self.opened_nodes:
             # The firt opened node is moved to the closed nodes list
@@ -38,7 +39,10 @@ class AStarClass:
             if current_state.isObjetive:
                 self.path_to_objective(current_state)
                 print("PATH:")
-                return self.path
+                finish_time = time.time()
+
+                # Return the path, number of explored nodes and execution time
+                return self.path, len(self.closed_nodes), finish_time - start_time
 
             for successor in successors:
                 print("------------------")
@@ -64,8 +68,10 @@ class AStarClass:
             # When all successors have been expanded, the opened_nodes are sorted according to f() value
             self.opened_nodes.sort(key = lambda n: n.f())
             self.opened_nodes.reverse()
+
+        finish_time = time.time()
         # If no objective is found, returns None
-        return None
+        return None, len(self.closed_nodes), finish_time - start_time
 
     def path_to_objective(self, state):
         """Generates the path from initial state to objective"""
