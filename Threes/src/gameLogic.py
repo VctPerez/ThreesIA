@@ -45,6 +45,13 @@ class GameLogic:
                 self.time_passed = 0
                 self.index += 1
 
+    def skip_animation(self):
+        # Just update reference once
+        if self.index < len(self.path):
+            self.index = len(self.path)
+            self.boardState = self.path[-1]
+            self.boardView.set_boardState(self.boardState)
+
     def paint(self):
         # Fill the screen with a background color
         self.screen.fill("gray")
@@ -78,11 +85,17 @@ class GameLogic:
     def run_a_star(self):
         run_loop = True
         while run_loop:
-            delta_time = clock.tick(SEED)
+            delta_time = clock.tick(config.FPS)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run_loop = False
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    self.infoView.handle_event(event)
 
-            self.update_board(delta_time)
+            if self.infoView.check_skip_animation():
+                self.skip_animation()
+            else:
+                self.update_board(delta_time)
+
             self.paint()
