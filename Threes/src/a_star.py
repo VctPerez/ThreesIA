@@ -67,7 +67,6 @@ class AStarClass:
 
             # When all successors have been expanded, the opened_nodes are sorted according to f() value
             self.opened_nodes.sort(key = lambda n: n.f())
-            self.opened_nodes.reverse()
 
         finish_time = time.time()
         # If no objective is found, returns None
