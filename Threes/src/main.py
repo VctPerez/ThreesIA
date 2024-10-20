@@ -7,13 +7,10 @@ from src.game.gameLogic import GameLogic
 pygame.init()
 screen = pygame.display.set_mode((config.SCREEN_WIDTH, config.SCREEN_HEIGHT))
 
-# OPTIONS: 'a_star' or 'manual'
+# OPTION: 'a_star' or 'manual'
 # SET to 'None' to show the menu
 # SET to 'a_star' or 'manual' TO SKIP MENU
-
 option = None
-# option = 'a_star'
-# option = 'manual'
 
 # Main entry point
 if __name__ == '__main__':

@@ -39,7 +39,7 @@ class AStar:
 
             for successor in successors:
                 print("------------------")
-                print(successor.cells)
+                print(successor.board.cells)
                 print("Coste (g) =", successor.g())
                 print("Heuristica (h) =", successor.h())
                 print("Valor del nodo (f) =", successor.f())
@@ -68,7 +68,7 @@ class AStar:
 
     def path_to_objective(self, state):
         """Generates the path from initial state to objective"""
-        self.path.insert(0, state)
+        self.path.insert(0, state.board)
         if state.father: self.path_to_objective(state.father)
 
 

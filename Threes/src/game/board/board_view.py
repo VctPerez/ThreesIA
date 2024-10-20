@@ -22,15 +22,15 @@ def choose_color(value):
     else:
         return colors.GOLD
 
-class Board:
+class BoardView:
 
     def __init__(self, screen, board):
         self.screen = screen
         self.pos = (board_x, board_y)
-        self.boardState = board
+        self.board = board
 
     def paint(self):
-        for index, value in numpy.ndenumerate(self.boardState.cells):
+        for index, value in numpy.ndenumerate(self.board.cells):
             cell_x = self.pos[0] + index[1] * (CELL_SIZE + 5)
             cell_y = self.pos[1] + index[0] * (CELL_SIZE + 5)
             if value == 0:
@@ -45,5 +45,5 @@ class Board:
             pygame.draw.rect(self.screen, (0,0,0), (cell_x, cell_y, CELL_SIZE, CELL_SIZE), 2, border_radius=5)
 
 
-    def set_boardState(self, new_board):
-        self.boardState = new_board
+    def set_board_state(self, new_board):
+        self.board = new_board

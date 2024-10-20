@@ -1,15 +1,12 @@
-import numpy as np
 import pygame
 
 from src.game.board.board_controller import BoardController
 from src.game.board.board_state import BoardState
-from src.game.board.board_view import Board
+from src.game.board.board_view import BoardView
 from src.a_star import AStar
 from src.game.stats.info_view import InfoView
+from src.node import Node
 from src.utils import config
-
-SEED = 2
-randomGenerator = np.random.default_rng(seed=SEED)
 
 clock = pygame.time.Clock()
 
@@ -17,25 +14,27 @@ class GameLogic:
     def __init__(self, screen, game_mode):
         self.screen = screen
         self.game_mode = game_mode
-        self.boardState = BoardState(None, config.N_ROWS, config.N_COLS, randomGenerator)
-        self.boardController = BoardController(self.boardState)
 
         if game_mode == 'a_star':
             # Initialize the A* algorithm
-            self.a_star_object = AStar(self.boardState)
+            self.a_star_object = AStar(Node())
 
             a_star_info = self.a_star_object.algorithm()
 
             self.path = a_star_info[0]
-            self.boardView = Board(self.screen, board = self.path[0])
+            self.current_board = self.path[0]
+            self.boardView = BoardView(self.screen, board = self.current_board)
             self.infoView = InfoView(self.screen, a_star_info[1], a_star_info[2])
 
             # Initialize the time passed and the index of the path
             self.time_passed = 0
             self.index = 0
-
         if game_mode == 'manual':
-            self.boardView = Board(self.screen, self.boardState)
+            self.current_board = BoardState()
+            self.current_board.init_board()
+            self.boardView = BoardView(self.screen, self.current_board)
+
+        self.boardController = BoardController(self.current_board)
 
     def paint(self):
         # Fill the screen with a background color
@@ -90,8 +89,8 @@ class GameLogic:
 
         if self.game_mode == 'a_star':
             if self.index < len(self.path) and self.time_passed >= config.TIME_BETWEEN_MOVES:
-                self.boardState = self.path[self.index]
-                self.boardView.set_boardState(self.boardState)
+                self.current_board = self.path[self.index]
+                self.boardView.set_board_state(self.current_board)
                 self.time_passed = 0
                 self.index += 1
 
@@ -99,5 +98,5 @@ class GameLogic:
         # Just update reference once
         if self.index < len(self.path):
             self.index = len(self.path)
-            self.boardState = self.path[-1]
-            self.boardView.set_boardState(self.boardState)
+            self.current_board = self.path[-1]
+            self.boardView.set_board_state(self.current_board)
