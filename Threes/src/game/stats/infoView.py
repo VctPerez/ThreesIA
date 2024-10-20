@@ -1,5 +1,5 @@
 import pygame
-import colors
+from src.utils import colors
 
 font = pygame.font.Font(None, 40)
 

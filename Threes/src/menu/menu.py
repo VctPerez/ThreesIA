@@ -1,7 +1,7 @@
 import pygame
 
-from colors import WHITE, GRAY, BLUE, GREEN, ORANGE
-from config import SCREEN_WIDTH, SCREEN_HEIGHT
+from src.utils.colors import WHITE, GRAY, BLUE, GREEN, ORANGE
+from src.utils.config import SCREEN_WIDTH, SCREEN_HEIGHT
 
 # Class to handle the main menu
 class Menu:

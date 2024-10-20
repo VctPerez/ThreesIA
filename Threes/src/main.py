@@ -1,8 +1,8 @@
 import pygame
 
-import config
-from menu import Menu
-from gameLogic import GameLogic
+from src.utils import config
+from src.menu.menu import Menu
+from src.game.gameLogic import GameLogic
 
 pygame.init()
 screen = pygame.display.set_mode((config.SCREEN_WIDTH, config.SCREEN_HEIGHT))

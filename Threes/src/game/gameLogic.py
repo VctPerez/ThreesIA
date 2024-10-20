@@ -1,12 +1,12 @@
 import numpy as np
 import pygame
 
-from src.boardController import BoardController
-from src.boardState import BoardState
-from src.boardView import Board
-from a_star import AStarClass
-from infoView import InfoView
-import config
+from src.game.board.boardController import BoardController
+from src.game.board.boardState import BoardState
+from src.game.board.boardView import Board
+from src.a_star import AStarClass
+from src.game.stats.infoView import InfoView
+from src.utils import config
 
 SEED = 2
 randomGenerator = np.random.default_rng(seed=SEED)
@@ -17,7 +17,7 @@ class GameLogic:
     def __init__(self, screen, game_mode):
         self.screen = screen
         self.game_mode = game_mode
-        self.boardState = BoardState(None,config.N_ROWS, config.N_COLS, randomGenerator)
+        self.boardState = BoardState(None, config.N_ROWS, config.N_COLS, randomGenerator)
         self.boardController = BoardController(self.boardState)
         if game_mode == 'a_star':
             # Initialize the A* algorithm
@@ -32,7 +32,7 @@ class GameLogic:
             # Initialize the time passed and the index of the path
             self.time_passed = 0
             self.index = 0
-        else:
+        if game_mode == 'manual':
             self.boardView = Board(self.screen,100, self.boardState)
 
     def update_board(self, delta_time):

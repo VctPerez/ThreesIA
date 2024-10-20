@@ -1,8 +1,7 @@
 import numpy
 import pygame
 
-import colors
-import config
+from src.utils import config, colors
 
 pygame.font.init()
 font = pygame.font.SysFont(None, 40)  # Tamaño de fuente de 40

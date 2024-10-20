@@ -1,16 +1,9 @@
-from numpy.ma.core import empty
-import pygame
 import numpy as np
 import time
-
-from src.boardController import BoardController
-from src.boardState import BoardState
 
 SEED = 1
 randomGenerator = np.random.default_rng(seed=SEED)
 
-boardState = BoardState(None,4, 4, randomGenerator)
-boardController = BoardController(boardState)
 
 class AStarClass:
 
@@ -66,7 +59,8 @@ class AStarClass:
                         self.opened_nodes.append(successor)
 
             # When all successors have been expanded, the opened_nodes are sorted according to f() value
-            self.opened_nodes.sort(key = lambda n: n.f())
+            self.opened_nodes.sort(key=lambda n: n.f())
+            # self.opened_nodes.reverse()
 
         finish_time = time.time()
         # If no objective is found, returns None
@@ -77,10 +71,11 @@ class AStarClass:
         self.path.insert(0, state)
         if state.father: self.path_to_objective(state.father)
 
-if __name__ == '__main__':
-    aStar = AStarClass(boardState)
-    path = aStar.algorithm()
-    if path:
-        for elem in (path):
-            print("--------------------------------------")
-            print(elem.cells)
+
+# if __name__ == '__main__':
+#     aStar = AStarClass(boardState)
+#     path = aStar.algorithm()
+#     if path:
+#         for elem in (path):
+#             print("--------------------------------------")
+#             print(elem.cells)
