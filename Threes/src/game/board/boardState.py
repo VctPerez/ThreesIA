@@ -80,7 +80,7 @@ class BoardState:
             self.n_cols = father.n_cols
             self.cells = np.matrix.copy(father.cells)
 
-    def getSucessors(self):
+    def get_successors(self):
         successors = []
 
         # MOVE UP
@@ -111,7 +111,7 @@ class BoardState:
         if successor != self:
             successors.append(successor)
 
-        if (successors == []) :
+        if not successors:
             self.isObjetive = True
 
         return successors

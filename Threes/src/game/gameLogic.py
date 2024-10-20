@@ -19,6 +19,7 @@ class GameLogic:
         self.game_mode = game_mode
         self.boardState = BoardState(None, config.N_ROWS, config.N_COLS, randomGenerator)
         self.boardController = BoardController(self.boardState)
+
         if game_mode == 'a_star':
             # Initialize the A* algorithm
             self.a_star_object = AStarClass(self.boardState)
@@ -26,31 +27,15 @@ class GameLogic:
             a_star_info = self.a_star_object.algorithm()
 
             self.path = a_star_info[0]
-            self.boardView = Board(self.screen,100, self.path[0])
+            self.boardView = Board(self.screen, board = self.path[0])
             self.infoView = InfoView(self.screen, a_star_info[1], a_star_info[2])
 
             # Initialize the time passed and the index of the path
             self.time_passed = 0
             self.index = 0
+
         if game_mode == 'manual':
-            self.boardView = Board(self.screen,100, self.boardState)
-
-    def update_board(self, delta_time):
-        self.time_passed += delta_time
-
-        if self.game_mode == 'a_star':
-            if self.index < len(self.path) and self.time_passed >= config.TIME_BETWEEN_MOVES:
-                self.boardState = self.path[self.index]
-                self.boardView.set_boardState(self.boardState)
-                self.time_passed = 0
-                self.index += 1
-
-    def skip_animation(self):
-        # Just update reference once
-        if self.index < len(self.path):
-            self.index = len(self.path)
-            self.boardState = self.path[-1]
-            self.boardView.set_boardState(self.boardState)
+            self.boardView = Board(self.screen, self.boardState)
 
     def paint(self):
         # Fill the screen with a background color
@@ -99,3 +84,20 @@ class GameLogic:
                 self.update_board(delta_time)
 
             self.paint()
+
+    def update_board(self, delta_time):
+        self.time_passed += delta_time
+
+        if self.game_mode == 'a_star':
+            if self.index < len(self.path) and self.time_passed >= config.TIME_BETWEEN_MOVES:
+                self.boardState = self.path[self.index]
+                self.boardView.set_boardState(self.boardState)
+                self.time_passed = 0
+                self.index += 1
+
+    def skip_animation(self):
+        # Just update reference once
+        if self.index < len(self.path):
+            self.index = len(self.path)
+            self.boardState = self.path[-1]
+            self.boardView.set_boardState(self.boardState)

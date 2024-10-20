@@ -26,7 +26,7 @@ class AStarClass:
             self.closed_nodes.append(current_state)
 
             # Expand current_state successors
-            successors = current_state.getSucessors()
+            successors = current_state.get_successors()
 
             # If this node is the objective, returns the path from initial state to objective
             if current_state.isObjetive:
