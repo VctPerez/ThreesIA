@@ -8,7 +8,7 @@ from a_star import AStarClass
 from infoView import InfoView
 import config
 
-SEED = 1
+SEED = 2
 randomGenerator = np.random.default_rng(seed=SEED)
 
 clock = pygame.time.Clock()

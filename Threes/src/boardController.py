@@ -9,7 +9,7 @@ class BoardController:
         if self.key_is_arrow_or_wasd(key):
             self.make_movement(key)
 
-            print(self.boardState.cells)
+            # print(self.boardState.cells)
 
     def key_is_arrow_or_wasd(self, key):
         return (key == pygame.K_UP or key == pygame.K_DOWN or key == pygame.K_RIGHT or key == pygame.K_LEFT
