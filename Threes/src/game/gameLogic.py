@@ -1,11 +1,11 @@
 import numpy as np
 import pygame
 
-from src.game.board.boardController import BoardController
-from src.game.board.boardState import BoardState
-from src.game.board.boardView import Board
-from src.a_star import AStarClass
-from src.game.stats.infoView import InfoView
+from src.game.board.board_controller import BoardController
+from src.game.board.board_state import BoardState
+from src.game.board.board_view import Board
+from src.a_star import AStar
+from src.game.stats.info_view import InfoView
 from src.utils import config
 
 SEED = 2
@@ -22,7 +22,7 @@ class GameLogic:
 
         if game_mode == 'a_star':
             # Initialize the A* algorithm
-            self.a_star_object = AStarClass(self.boardState)
+            self.a_star_object = AStar(self.boardState)
 
             a_star_info = self.a_star_object.algorithm()
 

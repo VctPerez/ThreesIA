@@ -5,7 +5,7 @@ SEED = 1
 randomGenerator = np.random.default_rng(seed=SEED)
 
 
-class AStarClass:
+class AStar:
 
     def __init__(self, initial_board):
         """
@@ -73,7 +73,7 @@ class AStarClass:
 
 
 # if __name__ == '__main__':
-#     aStar = AStarClass(boardState)
+#     aStar = AStar(boardState)
 #     path = aStar.algorithm()
 #     if path:
 #         for elem in (path):
