@@ -12,6 +12,7 @@ from src.utils.config import N_COLS, N_ROWS, SEED
 
 VALUES = [1,2,3]
 
+
 def check_sum(cell, new_cell):
     # Checks whether two cells can be merged
     return (cell + new_cell == 3 or
@@ -20,15 +21,24 @@ def check_sum(cell, new_cell):
             new_cell == 0)
 
 def merge_and_replace(arr, direction):
+    """
+    This function checks the values of the array and merges them in the specified direction
+    :param arr: Row or column of the board.
+    :param direction: "left" or "right". The movement determines the direction to iterate over the array for merge checks.
+    :return: The array with the possible merges and filled with zeros on the empty spaces.
+    """
+
     res = np.zeros(4)
     values = [i for i in arr if i != 0]
     new_values = []
     values_size = len(values)
 
+    # The movement determines the direction to iterate over the array.
     # if movement is to the left, it checks from left to right
     (start, stop, step) = (0,values_size-1,1) if direction == "left" else (values_size-1, 0,-1)
 
-    #Iterate over the array and make the possible merges
+    # Iterate over the array and make the possible merges
+    # Fill the new_values list with the merged values
     i = start
     while i * step <= stop:
 
@@ -43,16 +53,18 @@ def merge_and_replace(arr, direction):
 
         i = i + step
 
-    if (values_size==1) :
+    # If there is only one value in the array, there cannot be any merge
+    if values_size==1:
         new_values = values
 
+    # Fill the res array with the new_values list
     if direction == "left" and len(values) > 0:
-        # Set everything to the left
+        # Set values to the left of the res array. Leaving the rest of the array with zeros
         res[:len(new_values)] = new_values
     if direction == "right" and len(values) > 0:
-        #We have to reverse the new_values list because the values are appended left to right even thoudh we check from right to left
+        # We have to reverse the new_values list because the values are appended left to right even thoudh we check from right to left
         new_values.reverse()
-        # Set everything to the right
+        # Set values to the right of the res array. Leaving the rest of the array with zeros
         res[-len(new_values):] = new_values
 
     return res
@@ -78,6 +90,7 @@ class BoardState(Node):
             self.rng = np.random.default_rng(seed=SEED)
             self.rng.bit_generator.state = self.father.rng.bit_generator.state
 
+        self.init_board()
 
     def __eq__(self, other):
         res = (self.cells == other.cells).all()

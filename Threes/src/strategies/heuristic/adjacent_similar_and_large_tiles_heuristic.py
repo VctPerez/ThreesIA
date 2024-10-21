@@ -32,6 +32,7 @@ class AdjacentSimilarAndLargeTiles(AbstractHeuristicStrategy):
                 big_in_corner = True
                 break
         return (big_in_corner, max_tile)
+
     def score_of(self, value):
         return np.pow(3, (1 + np.log2(value / 3)))
 

@@ -4,6 +4,10 @@ from src.utils import colors
 font = pygame.font.Font(None, 40)
 
 class AStarStats:
+    """
+    Class that displays the statistics of the A* algorithm
+    and handles the skip button to show the final board
+    """
     def __init__(self, screen, n_expanded_nodes, exec_time, final_score):
         self.screen = screen
 
