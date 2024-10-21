@@ -1,5 +1,9 @@
 import numpy as np
-from src.utils.config import N_ROWS, N_COLS, SEED
+import math
+from src.node import Node
+from src.strategies.cost.unit_cost import UnitCost
+from src.strategies.heuristic.score_difference_heuristic import ScoreDifferenceHeuristic
+from src.utils.config import N_COLS, N_ROWS
 
 VALUES = [1,2,3]
 
@@ -11,7 +15,6 @@ def check_sum(cell, new_cell):
             new_cell == 0)
 
 def merge_and_replace(arr, direction):
-    print("\n")
     res = np.zeros(4)
     values = [i for i in arr if i != 0]
     new_values = []
@@ -35,7 +38,7 @@ def merge_and_replace(arr, direction):
 
         i = i + step
 
-    if values_size==1:
+    if (values_size==1) :
         new_values = values
 
     if direction == "left" and len(values) > 0:
@@ -49,12 +52,24 @@ def merge_and_replace(arr, direction):
 
     return res
 
-class BoardState:
-    # Static variable
-    rng = np.random.default_rng(seed=SEED)
+class BoardState(Node):
+    #Static variables for cost and heuristic strategies
+    cost_strategy = UnitCost()
+    heuristic_strategy = ScoreDifferenceHeuristic()
 
-    def __init__(self,cells=None):
-        self.cells = np.zeros((N_ROWS,N_COLS)) if cells is None else cells
+    def __init__(self, father=None, n_rows=None, n_cols=None, rng=None):
+        super().__init__(father)
+
+        if father is None:
+            self.n_rows = n_rows
+            self.n_cols = n_cols
+            self.cells = np.zeros((n_rows, n_cols))
+            self.rng = rng
+        else:
+            self.n_rows = father.n_rows
+            self.n_cols = father.n_cols
+            self.cells = np.matrix.copy(father.cells)
+            self.rng = np.random.default_rng(father.rng.bit_generator)
 
     def __eq__(self, other):
         res = (self.cells == other.cells).all()
@@ -125,6 +140,13 @@ class BoardState:
     # def h(self):
     #     return self.h_nmoves_for_doubling()
 
+    def g(self):
+        return self.cost_strategy.calc_g(self)
+
+    def h(self):
+        return self.heuristic_strategy.calc_h(self)
+
+
     def insert_random_number(self):
         row = self.rng.integers(0, 4)
         col = self.rng.integers(0, 4)
@@ -154,6 +176,32 @@ class BoardState:
         for row in range(N_ROWS):
             new_row = merge_and_replace(self.cells[row,:],direction="right")
             self.cells[row,:] = new_row
+
+    def get_successors(self):
+        movements = ["UP", "DOWN", "RIGHT", "LEFT"]
+        successors = []
+
+        for move in movements:
+            successor = BoardState(father=self)
+
+            if move == "UP":
+                successor.move_up()
+            elif move == "DOWN":
+                successor.move_down()
+            elif move == "RIGHT":
+                successor.move_right()
+            elif move == "LEFT":
+                successor.move_left()
+
+            successor.insert_random_number()
+
+            if successor != self:
+                successors.append(successor)
+
+        if not successors:
+            self.isObjetive = True
+
+        return successors
 
     def get_empty_cells(self):
         count = 0

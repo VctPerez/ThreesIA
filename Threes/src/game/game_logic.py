@@ -1,4 +1,5 @@
 import pygame
+from numpy.random import SeedSequence
 
 from src.game.board.board_controller import BoardController
 from src.game.board.board_state import BoardState
@@ -7,6 +8,8 @@ from src.a_star import AStar
 from src.game.stats.info_view import InfoView
 from src.node import Node
 from src.utils import config
+from src.utils.config import N_ROWS, N_COLS, SEED
+import numpy as np
 
 clock = pygame.time.Clock()
 
@@ -15,9 +18,11 @@ class GameLogic:
         self.screen = screen
         self.game_mode = game_mode
 
+        rng = np.random.default_rng(seed=SEED)
+
         if game_mode == 'a_star':
             # Initialize the A* algorithm
-            self.a_star_object = AStar(Node())
+            self.a_star_object = AStar(BoardState(father=None, n_rows=N_ROWS, n_cols=N_COLS, rng=rng))
 
             a_star_info = self.a_star_object.algorithm()
 
@@ -30,7 +35,7 @@ class GameLogic:
             self.time_passed = 0
             self.index = 0
         if game_mode == 'manual':
-            self.current_board = BoardState()
+            self.current_board = BoardState(father=None, n_rows=N_ROWS, n_cols=N_COLS, rng=rng)
             self.current_board.init_board()
             self.boardView = BoardView(self.screen, self.current_board)
 
