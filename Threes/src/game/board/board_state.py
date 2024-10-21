@@ -5,6 +5,8 @@ from numpy.random import BitGenerator, SeedSequence
 
 from src.node import Node
 from src.strategies.cost.merge_cost import MergeCost
+from src.strategies.cost.unit_cost import UnitCost
+from src.strategies.heuristic.adjacent_similar_and_large_tiles_heuristic import AdjacentSimilarAndLargeTiles
 from src.strategies.heuristic.score_difference_heuristic import ScoreDifferenceHeuristic
 from src.utils.config import N_COLS, N_ROWS, SEED
 
@@ -57,8 +59,9 @@ def merge_and_replace(arr, direction):
 
 class BoardState(Node):
     #Static variables for cost and heuristic strategies
-    cost_strategy = MergeCost()
-    heuristic_strategy = ScoreDifferenceHeuristic()
+    cost_strategy = UnitCost()
+    heuristic_strategy = AdjacentSimilarAndLargeTiles()
+
 
     def __init__(self, father=None, n_rows=None, n_cols=None, rng=None):
         super().__init__(father)
@@ -192,6 +195,53 @@ class BoardState(Node):
                 if self.cells[row,col] == 0.0:
                     count = count + 1
         return count
+
+    def get_max_tile(self):
+        n = len(self.cells)
+        max_value = self.cells[0][0];
+        for i in range(n):
+            for j in range(n):
+                max_value = max(max_value, self.cells[i][j])
+        return max_value
+
+    def get_combination_quantity(self):
+        n = len(self.cells)
+        fusion_count = 0;
+        for i in range(n):
+            for j in range(n):
+                current_tile = self.cells[i][j]
+                if i > 0:
+                    adjacent_tile = self.cells[i - 1][j]
+                    if current_tile == adjacent_tile:
+                        fusion_count += 1  # Cuenta como una posible fusión
+                    if (current_tile == 1 and adjacent_tile == 2) or (current_tile == 2 and adjacent_tile == 1):
+                        adjacent_match = True
+                        fusion_count += 1  # Cuenta como una posible fusión de 1 y 2
+
+                    # Compara con la ficha de abajo
+                if i < n - 1:
+                    adjacent_tile = self.cells[i + 1][j]
+                    if current_tile == adjacent_tile:
+                        fusion_count += 1  # Cuenta como una posible fusión
+                    if (current_tile == 1 and adjacent_tile == 2) or (current_tile == 2 and adjacent_tile == 1):
+                        fusion_count += 1  # Cuenta como una posible fusión de 1 y 2
+
+                    # Compara con la ficha a la izquierda
+                if j > 0:
+                    adjacent_tile = self.cells[i][j - 1]
+                    if current_tile == adjacent_tile:
+                        fusion_count += 1  # Cuenta como una posible fusión
+                    if (current_tile == 1 and adjacent_tile == 2) or (current_tile == 2 and adjacent_tile == 1):
+                        fusion_count += 1  # Cuenta como una posible fusión de 1 y 2
+
+                    # Compara con la ficha a la derecha
+                if j < n - 1:
+                    adjacent_tile = self.cells[i][j + 1]
+                    if current_tile == adjacent_tile:
+                        fusion_count += 1  # Cuenta como una posible fusión
+                    if (current_tile == 1 and adjacent_tile == 2) or (current_tile == 2 and adjacent_tile == 1):
+                        fusion_count += 1  # Cuenta como una posible fusión de 1 y 2
+        return fusion_count
 
     def init_board(self):
         for i in range(7):
