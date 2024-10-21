@@ -2,10 +2,10 @@ import pygame
 
 class BoardController:
 
-    def __init__(self, boardState):
-        self.boardState = boardState
+    def __init__(self, board_state):
+        self.boardState = board_state
 
-    def handleKeydown(self, key):
+    def handle_key_down(self, key):
         if self.key_is_arrow_or_wasd(key):
             self.make_movement(key)
 

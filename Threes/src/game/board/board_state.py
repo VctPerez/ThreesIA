@@ -1,5 +1,4 @@
 import numpy as np
-import math
 from src.utils.config import N_ROWS, N_COLS, SEED
 
 VALUES = [1,2,3]
@@ -36,7 +35,7 @@ def merge_and_replace(arr, direction):
 
         i = i + step
 
-    if (values_size==1) :
+    if values_size==1:
         new_values = values
 
     if direction == "left" and len(values) > 0:

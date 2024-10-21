@@ -33,5 +33,5 @@ class RukaiCosts(AbstractCost):
         return 1
 
     def h_score_difference(self, node):
-        MAX_SCORE = 64570080
-        return MAX_SCORE - node.board.get_board_score()
+        max_score = 64570080
+        return max_score - node.board.get_board_score()

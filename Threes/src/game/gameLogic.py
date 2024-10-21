@@ -62,7 +62,7 @@ class GameLogic:
                 if event.type == pygame.QUIT:
                     run_loop = False
                 elif event.type == pygame.KEYDOWN:
-                    self.boardController.handleKeydown(event.key)
+                    self.boardController.handle_key_down(event.key)
 
             self.paint()
 
