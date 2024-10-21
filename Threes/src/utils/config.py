@@ -9,4 +9,4 @@ FPS = 60
 TIME_BETWEEN_MOVES = 500
 
 # Seed for the random number generator
-SEED = 2
+SEED = 1

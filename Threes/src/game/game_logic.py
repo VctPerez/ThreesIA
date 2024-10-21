@@ -36,10 +36,9 @@ class GameLogic:
             self.index = 0
         if game_mode == 'manual':
             self.current_board = BoardState(father=None, n_rows=N_ROWS, n_cols=N_COLS, rng=rng)
-            self.current_board.init_board()
-            self.boardView = BoardView(self.screen, self.current_board)
 
-        self.boardController = BoardController(self.current_board)
+            self.boardView = BoardView(self.screen, self.current_board)
+            self.boardController = BoardController(self.current_board)
 
     def paint(self):
         # Fill the screen with a background color

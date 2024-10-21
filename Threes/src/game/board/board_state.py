@@ -1,9 +1,12 @@
 import numpy as np
 import math
+
+from numpy.random import BitGenerator, SeedSequence
+
 from src.node import Node
 from src.strategies.cost.unit_cost import UnitCost
 from src.strategies.heuristic.score_difference_heuristic import ScoreDifferenceHeuristic
-from src.utils.config import N_COLS, N_ROWS
+from src.utils.config import N_COLS, N_ROWS, SEED
 
 VALUES = [1,2,3]
 
@@ -69,7 +72,9 @@ class BoardState(Node):
             self.n_rows = father.n_rows
             self.n_cols = father.n_cols
             self.cells = np.matrix.copy(father.cells)
-            self.rng = np.random.default_rng(father.rng.bit_generator)
+            self.rng = np.random.default_rng(seed=SEED)
+            self.rng.bit_generator.state = self.father.rng.bit_generator.state
+
 
     def __eq__(self, other):
         res = (self.cells == other.cells).all()
@@ -182,7 +187,7 @@ class BoardState(Node):
         successors = []
 
         for move in movements:
-            successor = BoardState(father=self)
+            successor = BoardState(father=self, rng=np.random.default_rng(self.rng.bit_generator))
 
             if move == "UP":
                 successor.move_up()
