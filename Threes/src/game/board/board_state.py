@@ -4,7 +4,7 @@ import math
 from numpy.random import BitGenerator, SeedSequence
 
 from src.node import Node
-from src.strategies.cost.unit_cost import UnitCost
+from src.strategies.cost.merge_cost import MergeCost
 from src.strategies.heuristic.score_difference_heuristic import ScoreDifferenceHeuristic
 from src.utils.config import N_COLS, N_ROWS, SEED
 
@@ -57,7 +57,7 @@ def merge_and_replace(arr, direction):
 
 class BoardState(Node):
     #Static variables for cost and heuristic strategies
-    cost_strategy = UnitCost()
+    cost_strategy = MergeCost()
     heuristic_strategy = ScoreDifferenceHeuristic()
 
     def __init__(self, father=None, n_rows=None, n_cols=None, rng=None):
@@ -91,29 +91,6 @@ class BoardState(Node):
 
     # Esto lo comento porque es demasiado y no quiero borrarlo
 
-    # def coste_arco(self):
-    #     # flat_father_cells = self.father.cells.flatten()
-    #     #
-    #     # father_unique_elements, father_counts = np.unique(flat_father_cells, return_counts=True)
-    #     #
-    #     # father_pairs_count = np.sum(father_counts // 2)
-    #     #
-    #     # flat_cells = self.father.cells.flatten()
-    #     #
-    #     # unique_elements, counts = np.unique(flat_cells, return_counts=True)
-    #     #
-    #     # pairs_count = np.sum(counts // 2)
-    #     #
-    #     # cost = 0
-    #     #
-    #     # if father_pairs_count > pairs_count:
-    #     #     cost = father_pairs_count-pairs_count
-    #     # elif father_pairs_count == pairs_count:
-    #     #     cost = 1
-    #     # else:
-    #     #     cost = 0
-    #
-    #     return 1
     #
     # def g(self):
     #     if self.father is None:
@@ -187,7 +164,7 @@ class BoardState(Node):
         successors = []
 
         for move in movements:
-            successor = BoardState(father=self, rng=np.random.default_rng(self.rng.bit_generator))
+            successor = BoardState(father=self)
 
             if move == "UP":
                 successor.move_up()
