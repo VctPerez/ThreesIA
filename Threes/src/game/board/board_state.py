@@ -92,39 +92,6 @@ class BoardState(Node):
                     score += np.pow(3, (1 + np.log2(cell / 3)))
         return score
 
-    # Esto lo comento porque es demasiado y no quiero borrarlo
-
-    #
-    # def g(self):
-    #     if self.father is None:
-    #         return 0
-    #     else:
-    #         return self.coste_arco() + self.father.g()
-    #
-    # def h_doubling_needed(self):
-    #     return 16 - np.log2(self.cells.max()/3)
-    #
-    # def h_nmoves_for_doubling(self):
-    #     N = np.log2(self.cells.max()/3)
-    #     return ((np.pow(2,16))-1 + 16) -((np.pow(2,N)) - 1 + N)
-    #
-    # def h_biggest_number(self):
-    #     max =  self.cells.max()
-    #     return 98304 - max
-    #
-    # def h_score_difference(self):
-    #     MAX_SCORE = 64570080
-    #     return MAX_SCORE - self.getBoardScore()
-    #
-    # def h_empty_cells(self):
-    #     return 16 - self.get_empty_cells()
-    #
-    # def h_weighted(self):
-    #     return 0.50*self.h_empty_cells()+0.50*self.h_score_difference()
-    #
-    # def h(self):
-    #     return self.h_nmoves_for_doubling()
-
     def g(self):
         return self.cost_strategy.calc_g(self)
 
@@ -249,3 +216,22 @@ class BoardState(Node):
 
     def copy(self):
         return BoardState(cells=np.matrix.copy(self.cells))
+
+    def is_objective(self):
+        if self.get_empty_cells() != 0:
+            return False
+
+        for (i, j), value in np.ndenumerate(self.cells):
+            # Check up
+            if i > 0 and check_sum(value, self.cells[i - 1, j]):
+                return False
+            # Check down
+            if i < N_ROWS - 1 and check_sum(value, self.cells[i + 1, j]):
+                return False
+            # Check right
+            if j < N_COLS - 1 and check_sum(value, self.cells[i, j + 1]):
+                return False
+            # Check left
+            if j > 0 and check_sum(value, self.cells[i, j - 1]):
+                return False
+        return True

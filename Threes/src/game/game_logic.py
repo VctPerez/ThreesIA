@@ -5,7 +5,8 @@ from src.game.board.board_controller import BoardController
 from src.game.board.board_state import BoardState
 from src.game.board.board_view import BoardView
 from src.a_star import AStar
-from src.game.stats.info_view import InfoView
+from src.game.stats.astar_stats import AStarStats
+from src.game.stats.manual_stats import ManualStats
 from src.node import Node
 from src.utils import config
 from src.utils.config import N_ROWS, N_COLS, SEED
@@ -15,6 +16,11 @@ clock = pygame.time.Clock()
 
 class GameLogic:
     def __init__(self, screen, game_mode):
+        """
+        Initializes the game logic depending on the selected game mode
+        If the game mode is 'a_star', the A* algorithm is executed and the path is stored
+        If the game mode is 'manual', the initial board state is created and lets the user play
+        """
         self.screen = screen
         self.game_mode = game_mode
 
@@ -23,13 +29,12 @@ class GameLogic:
         if game_mode == 'a_star':
             # Initialize the A* algorithm
             self.a_star_object = AStar(BoardState(father=None, n_rows=N_ROWS, n_cols=N_COLS, rng=rng))
+            path, expanded_nodes, exec_time = self.a_star_object.algorithm()
 
-            a_star_info = self.a_star_object.algorithm()
-
-            self.path = a_star_info[0]
+            self.path = path
             self.current_board = self.path[0]
-            self.boardView = BoardView(self.screen, board = self.current_board)
-            self.infoView = InfoView(self.screen, a_star_info[1], a_star_info[2])
+            self.board_view = BoardView(self.screen, board = self.current_board)
+            self.stats_view = AStarStats(self.screen, expanded_nodes, exec_time, path[-1].get_board_score())
 
             # Initialize the time passed and the index of the path
             self.time_passed = 0
@@ -37,7 +42,9 @@ class GameLogic:
         if game_mode == 'manual':
             self.current_board = BoardState(father=None, n_rows=N_ROWS, n_cols=N_COLS, rng=rng)
 
-            self.boardView = BoardView(self.screen, self.current_board)
+            self.board_view = BoardView(self.screen, self.current_board)
+            self.stats_view = ManualStats(self.screen)
+
             self.boardController = BoardController(self.current_board)
 
     def paint(self):
@@ -45,14 +52,15 @@ class GameLogic:
         self.screen.fill("gray")
 
         # Render the board state and the results stats
-        if self.game_mode == 'a_star':
-            self.infoView.paint()
-
-        self.boardView.paint()
+        self.stats_view.paint()
+        self.board_view.paint()
 
         pygame.display.flip()
 
     def run(self):
+        """
+        Runs the game loop depending on the selected game mode
+        """
         if self.game_mode == 'a_star':
             self.run_a_star()
         if self.game_mode == 'manual':
@@ -60,13 +68,19 @@ class GameLogic:
 
     def run_manual_control(self):
         run_loop = True
+        check_events = True
         while run_loop:
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run_loop = False
-                elif event.type == pygame.KEYDOWN:
+                elif check_events and event.type == pygame.KEYDOWN:
                     self.boardController.handle_key_down(event.key)
+
+            # If it is objective, show the final score
+            if check_events and self.current_board.is_objective():
+                self.stats_view.set_final_score(self.current_board.get_board_score())
+                check_events = False # Once the game ends there is no need to check events
 
             self.paint()
 
@@ -79,9 +93,10 @@ class GameLogic:
                 if event.type == pygame.QUIT:
                     run_loop = False
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    self.infoView.handle_event(event)
+                    self.stats_view.handle_event(event)
 
-            if self.infoView.check_skip_animation():
+            # If the skip button is pressed, show the final board
+            if self.stats_view.check_skip_animation():
                 self.skip_animation()
             else:
                 self.update_board(delta_time)
@@ -89,18 +104,25 @@ class GameLogic:
             self.paint()
 
     def update_board(self, delta_time):
+        """
+        Update the board state according to the time passed
+        The board state is updated every TIME_BETWEEN_MOVES milliseconds
+        """
         self.time_passed += delta_time
 
         if self.game_mode == 'a_star':
             if self.index < len(self.path) and self.time_passed >= config.TIME_BETWEEN_MOVES:
                 self.current_board = self.path[self.index]
-                self.boardView.set_board_state(self.current_board)
+                self.board_view.set_board_state(self.current_board)
                 self.time_passed = 0
                 self.index += 1
 
     def skip_animation(self):
+        """
+        Sets the current board to the final board state
+        """
         # Just update reference once
         if self.index < len(self.path):
             self.index = len(self.path)
             self.current_board = self.path[-1]
-            self.boardView.set_board_state(self.current_board)
+            self.board_view.set_board_state(self.current_board)
