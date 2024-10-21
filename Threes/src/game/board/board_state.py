@@ -145,9 +145,8 @@ class BoardState(Node):
             elif move == "LEFT":
                 successor.move_left()
 
-            successor.insert_random_number()
-
             if successor != self:
+                successor.insert_random_number()
                 successors.append(successor)
 
         if not successors:
