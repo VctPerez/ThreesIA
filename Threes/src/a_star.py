@@ -1,8 +1,8 @@
 import numpy as np
 import time
 
-SEED = 1
-randomGenerator = np.random.default_rng(seed=SEED)
+from src.utils.config import SEED
+randomGenerator = np.random.default_rng(SEED)
 
 
 def print_node(node):

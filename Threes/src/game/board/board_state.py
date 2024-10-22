@@ -77,7 +77,7 @@ class BoardState(Node):
     """
     #Static variables for cost and heuristic strategies
     cost_strategy = UnitCost()
-    heuristic_strategy = HighValuesCornerHeuristic()
+    heuristic_strategy = ScoreDifferenceHeuristic()
 
 
     def __init__(self, father=None, n_rows=None, n_cols=None, rng=None):
