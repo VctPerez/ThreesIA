@@ -7,6 +7,7 @@ from src.node import Node
 from src.strategies.cost.merge_cost import MergeCost
 from src.strategies.cost.unit_cost import UnitCost
 from src.strategies.heuristic.adjacent_similar_and_large_tiles_heuristic import AdjacentSimilarAndLargeTiles
+from src.strategies.heuristic.high_values_corner_heuristic import HighValuesCornerHeuristic
 from src.strategies.heuristic.score_difference_heuristic import ScoreDifferenceHeuristic
 from src.utils.config import N_COLS, N_ROWS, SEED
 
@@ -76,7 +77,7 @@ class BoardState(Node):
     """
     #Static variables for cost and heuristic strategies
     cost_strategy = UnitCost()
-    heuristic_strategy = AdjacentSimilarAndLargeTiles()
+    heuristic_strategy = HighValuesCornerHeuristic()
 
 
     def __init__(self, father=None, n_rows=None, n_cols=None, rng=None):
