@@ -17,8 +17,7 @@ def check_sum(cell, new_cell):
     # Checks whether two cells can be merged
     return (cell + new_cell == 3 or
             (cell == new_cell and
-             cell >= 3) or
-            new_cell == 0)
+             cell >= 3))
 
 def merge_and_replace(arr, direction):
     """
@@ -112,6 +111,10 @@ class BoardState(Node):
         return res
 
     def get_board_score(self):
+        """
+        Applies the score function to every cell in the board.
+        :return: sum of the scores of all the cells in the board.
+        """
         score = 0
 
         for rows in self.cells:
@@ -121,43 +124,87 @@ class BoardState(Node):
         return score
 
     def g(self):
+        """
+        Implementation of the cost function.
+        It calls a strategy to calculate the cost of the current state.
+        :return: cost g of the current state.
+        """
         return self.cost_strategy.calc_g(self)
 
     def h(self):
+        """
+        Implementation of the heuristic function.
+        It calls a strategy to calculate the heuristic of the current state.
+        :return: cost h of the current state.
+        """
         return self.heuristic_strategy.calc_h(self)
 
 
     def insert_random_number(self):
+        """
+        Inserts a random number in a random empty cell of the board.
+        The number is chosen from the VALUES array.
+        """
         row = self.rng.integers(0, 4)
         col = self.rng.integers(0, 4)
         if self.cells[row, col] == 0:
             random_index = self.rng.integers(0, len(VALUES))
             self.cells[row, col] = VALUES[random_index]
-        elif np.isin(0, self.cells):  # Para evitar recursion infinita en el caso de que no queden huecos libres
+        # If the random cell is occupied, it tries again
+        # But first it checks whether the board is full
+        elif np.isin(0, self.cells):
             self.insert_random_number()
 
 
     def move_up(self):
+        """
+        It applies the move_up rule. It checks every possible merge
+        """
+        # For each column in the array
         for col in range(N_COLS):
+            # Get the column and apply the merges from top to bottom
             new_col = merge_and_replace(self.cells[:,col],direction="left")
+            # Replace the column with the new values
             self.cells[:,col] = new_col
 
     def move_down(self):
+        """
+        It applies the move_down rule. It checks every possible merge
+        """
+        # For each column in the array
         for col in range(N_COLS):
+            # Get the column and apply the merges from bottom to top
             new_col = merge_and_replace(self.cells[:,col],direction="right")
+            # Replace the column with the new values
             self.cells[:,col] = new_col
 
     def move_left(self):
+        """
+        It applies the move_left rule. It checks every possible merge
+        """
+        # For each row in the array
         for row in range(N_ROWS):
+            # Get the row and apply the merges from left to right
             new_row = merge_and_replace(self.cells[row,:],direction="left")
+            # Replace the row with the new values
             self.cells[row,:] = new_row
 
     def move_right(self):
+        """
+        It applies the move_right rule. It checks every possible merge
+        """
+        # For each row in the array
         for row in range(N_ROWS):
+            # Get the row and apply the merges from right to left
             new_row = merge_and_replace(self.cells[row,:],direction="right")
+            # Replace the row with the new values
             self.cells[row,:] = new_row
 
     def get_successors(self):
+        """
+        It generates the successors of the current state. It applies the four movements rules to the current state.
+        :return: list of successor nodes.
+        """
         movements = ["UP", "DOWN", "RIGHT", "LEFT"]
         successors = []
 
@@ -173,16 +220,23 @@ class BoardState(Node):
             elif move == "LEFT":
                 successor.move_left()
 
+            # If the successor is different from the current state, it means the movement was valid
             if successor != self:
+                # Because of rng, all successors insert the same number at the same position, if possible
                 successor.insert_random_number()
                 successors.append(successor)
 
+        # If there are no successors, it means the game is over
         if not successors:
             self.isObjetive = True
 
         return successors
 
     def get_empty_cells(self):
+        """
+        Auxiliary function to get the number of empty cells in the board.
+        :return: amount of empty cells
+        """
         count = 0
         for row in range(N_ROWS):
             for col in range(N_COLS):
@@ -191,74 +245,46 @@ class BoardState(Node):
         return count
 
     def get_max_tile(self):
-        n = len(self.cells)
-        max_value = self.cells[0][0];
-        for i in range(n):
-            for j in range(n):
-                max_value = max(max_value, self.cells[i][j])
-        return max_value
+        """
+        Auxiliary function to get the maximum value in the board.
+        :return: max value in the board
+        """
+        return np.max(self.cells)
 
-    def get_combination_quantity(self):
-        n = len(self.cells)
-        fusion_count = 0;
-        for i in range(n):
-            for j in range(n):
-                current_tile = self.cells[i][j]
-                if i > 0:
-                    adjacent_tile = self.cells[i - 1][j]
-                    if current_tile == adjacent_tile:
-                        fusion_count += 1  # Cuenta como una posible fusión
-                    if (current_tile == 1 and adjacent_tile == 2) or (current_tile == 2 and adjacent_tile == 1):
-                        adjacent_match = True
-                        fusion_count += 1  # Cuenta como una posible fusión de 1 y 2
-
-                    # Compara con la ficha de abajo
-                if i < n - 1:
-                    adjacent_tile = self.cells[i + 1][j]
-                    if current_tile == adjacent_tile:
-                        fusion_count += 1  # Cuenta como una posible fusión
-                    if (current_tile == 1 and adjacent_tile == 2) or (current_tile == 2 and adjacent_tile == 1):
-                        fusion_count += 1  # Cuenta como una posible fusión de 1 y 2
-
-                    # Compara con la ficha a la izquierda
-                if j > 0:
-                    adjacent_tile = self.cells[i][j - 1]
-                    if current_tile == adjacent_tile:
-                        fusion_count += 1  # Cuenta como una posible fusión
-                    if (current_tile == 1 and adjacent_tile == 2) or (current_tile == 2 and adjacent_tile == 1):
-                        fusion_count += 1  # Cuenta como una posible fusión de 1 y 2
-
-                    # Compara con la ficha a la derecha
-                if j < n - 1:
-                    adjacent_tile = self.cells[i][j + 1]
-                    if current_tile == adjacent_tile:
-                        fusion_count += 1  # Cuenta como una posible fusión
-                    if (current_tile == 1 and adjacent_tile == 2) or (current_tile == 2 and adjacent_tile == 1):
-                        fusion_count += 1  # Cuenta como una posible fusión de 1 y 2
-        return fusion_count
-
-    def init_board(self):
-        for i in range(7):
-            self.insert_random_number()
-
-    def copy(self):
-        return BoardState(cells=np.matrix.copy(self.cells))
-
-    def is_objective(self):
-        if self.get_empty_cells() != 0:
-            return False
+    def get_merges_quantity(self):
+        """
+        Calculates the amount of possible merges in the board.
+        :return: sum of the possible merges
+        """
+        merges_count = 0
 
         for (i, j), value in np.ndenumerate(self.cells):
             # Check up
             if i > 0 and check_sum(value, self.cells[i - 1, j]):
-                return False
+                merges_count += 1
             # Check down
             if i < N_ROWS - 1 and check_sum(value, self.cells[i + 1, j]):
-                return False
+                merges_count += 1
             # Check right
             if j < N_COLS - 1 and check_sum(value, self.cells[i, j + 1]):
-                return False
+                merges_count += 1
             # Check left
             if j > 0 and check_sum(value, self.cells[i, j - 1]):
-                return False
-        return True
+                merges_count += 1
+
+        return merges_count
+
+    def init_board(self):
+        """
+        Initializes the board with 7 random numbers.
+        """
+        for i in range(7):
+            self.insert_random_number()
+
+    def is_objective(self):
+        """
+        Used for the manual game_mode. It checks whether the game is over.
+        If there are no empty cells and no possible merges, the game is over.
+        :return: true if the game is over, false otherwise.
+        """
+        return self.get_empty_cells() == 0 and self.get_merges_quantity() == 0

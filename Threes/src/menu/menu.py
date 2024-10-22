@@ -3,8 +3,11 @@ import pygame
 from src.utils.colors import WHITE, GRAY, BLUE, GREEN, ORANGE
 from src.utils.config import SCREEN_WIDTH, SCREEN_HEIGHT
 
-# Class to handle the main menu
 class Menu:
+    """
+    Class to handle the menu display and interaction
+    It shows the title and two buttons to select the game mode
+    """
     def __init__(self, screen):
         self.screen = screen
         self.font = pygame.font.Font(None, 40)

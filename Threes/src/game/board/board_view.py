@@ -23,7 +23,10 @@ def choose_color(value):
         return colors.GOLD
 
 class BoardView:
-
+    """
+    Class that handles the painting of the board
+    It is only the view
+    """
     def __init__(self, screen, board):
         self.screen = screen
         self.pos = (board_x, board_y)

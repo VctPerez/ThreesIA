@@ -15,6 +15,9 @@ import numpy as np
 clock = pygame.time.Clock()
 
 class GameLogic:
+    """
+    Class that handles the game logic depending on the selected game mode
+    """
     def __init__(self, screen, game_mode):
         """
         Initializes the game logic depending on the selected game mode
@@ -27,12 +30,13 @@ class GameLogic:
         rng = np.random.default_rng(seed=SEED)
 
         if game_mode == 'a_star':
-            # Initialize the A* algorithm
-            self.a_star_object = AStar(BoardState(father=None, n_rows=N_ROWS, n_cols=N_COLS, rng=rng))
-            path, expanded_nodes, exec_time = self.a_star_object.algorithm()
-
+            # Initialize and run the A* algorithm
+            self.astar_object = AStar(BoardState(father=None, n_rows=N_ROWS, n_cols=N_COLS, rng=rng))
+            path, expanded_nodes, exec_time = self.astar_object.algorithm()
             self.path = path
-            self.current_board = self.path[0]
+            self.current_board = self.path[0] # Initial board state
+
+            # Initialize the user interface
             self.board_view = BoardView(self.screen, board = self.current_board)
             self.stats_view = AStarStats(self.screen, expanded_nodes, exec_time, path[-1].get_board_score())
 
@@ -40,14 +44,21 @@ class GameLogic:
             self.time_passed = 0
             self.index = 0
         if game_mode == 'manual':
+            # Initialize the manual game mode
             self.current_board = BoardState(father=None, n_rows=N_ROWS, n_cols=N_COLS, rng=rng)
 
+            # Initialize the user interface
             self.board_view = BoardView(self.screen, self.current_board)
             self.stats_view = ManualStats(self.screen)
 
             self.boardController = BoardController(self.current_board)
 
     def paint(self):
+        """
+        Handles the painting of the screen
+        It calls the paint method of the board view and the stats view
+        """
+
         # Fill the screen with a background color
         self.screen.fill("gray")
 
@@ -67,6 +78,11 @@ class GameLogic:
             self.run_manual_control()
 
     def run_manual_control(self):
+        """
+        Game loop for the manual game mode
+        It checks the user input and updates the board state
+        Once the game ends, it shows the final score
+        """
         run_loop = True
         check_events = True
         while run_loop:
@@ -85,6 +101,11 @@ class GameLogic:
             self.paint()
 
     def run_a_star(self):
+        """
+        Game loop for the A* game mode
+        It shows the A* algorithm statistics and the board state
+        It also handles the skip button to show the final board
+        """
         run_loop = True
         while run_loop:
             delta_time = clock.tick(config.FPS)
