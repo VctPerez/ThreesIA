@@ -70,12 +70,26 @@ def merge_and_replace(arr, direction):
     return res
 
 class BoardState(Node):
+    """
+    Class that defines the state of the board.
+    It inherits from Node class and implements the methods to calculate the costs and get the successors.
+    Contains all logic related to the board state and the game rules.
+    """
     #Static variables for cost and heuristic strategies
     cost_strategy = UnitCost()
     heuristic_strategy = AdjacentSimilarAndLargeTiles()
 
 
     def __init__(self, father=None, n_rows=None, n_cols=None, rng=None):
+        """
+        Class constructor, initializes the board state.
+        If it has no father, it means it is the root node, so it initializes the board with random numbers.
+        Otherwise, it copies the father's board state and the random number generator.
+        :param father: father node
+        :param n_rows: number of rows
+        :param n_cols: number of columns
+        :param rng: random number generator. It is passed in order to copy its state when creating a new node.
+        """
         super().__init__(father)
 
         if father is None:
@@ -83,14 +97,15 @@ class BoardState(Node):
             self.n_cols = n_cols
             self.cells = np.zeros((n_rows, n_cols))
             self.rng = rng
+            self.init_board()
         else:
             self.n_rows = father.n_rows
             self.n_cols = father.n_cols
             self.cells = np.matrix.copy(father.cells)
             self.rng = np.random.default_rng(seed=SEED)
+            # Copy the state so that the random number generator is the same
             self.rng.bit_generator.state = self.father.rng.bit_generator.state
 
-        self.init_board()
 
     def __eq__(self, other):
         res = (self.cells == other.cells).all()
