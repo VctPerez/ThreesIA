@@ -5,6 +5,19 @@ SEED = 1
 randomGenerator = np.random.default_rng(seed=SEED)
 
 
+def print_node(node):
+    print("------------------")
+    print(node.cells)
+    print("Coste (g) =", node.g())
+    print("Heuristica (h) =", node.h())
+    print("Valor del nodo (f) =", node.f())
+
+def print_path(path):
+    print("\n\n\n-----------PATH-----------\n\n\n")
+    for node in path:
+        print_node(node)
+
+
 class AStar:
 
     def __init__(self, initial_board):
@@ -31,18 +44,14 @@ class AStar:
             # If this node is the objective, returns the path from initial state to objective
             if current_node.isObjetive:
                 self.path_to_objective(current_node)
-                print("PATH: ")#TODO: Method that prints the path
+                print_path(self.path)
                 finish_time = time.time()
 
                 # Return the path, number of explored nodes and execution time
                 return self.path, len(self.closed_nodes), finish_time - start_time
 
             for successor in successors:
-                print("------------------")
-                print(successor.cells)
-                print("Coste (g) =", successor.g())
-                print("Heuristica (h) =", successor.h())
-                print("Valor del nodo (f) =", successor.f())
+                print_node(successor)
 
                 # If it's new, it establishes a pointer from successor to current_stat, and it is added to opened nodes
                 if successor not in self.opened_nodes and successor not in self.closed_nodes:
